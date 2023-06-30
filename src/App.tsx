@@ -1,25 +1,30 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable-next-line react-hooks/exhaustive-deps */
+import { useState } from 'react';
+import { useMount, useUnmount } from './hooks';
+import { Button, message } from 'antd';
 
-import { useState, useEffect } from 'react';
-import { useLatest } from '@/hooks/useLatest';
-export default () => {
-  const [count, setCount] = useState(0);
-  const ref = useLatest(count);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log(count);
-      console.log(ref.current);
-      setCount(ref.current + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+const Child = () => {
+  useMount(() => {
+    message.info('首次渲染');
+  });
+
+  useUnmount(() => {
+    message.info('组件已卸载');
+  });
+
+  return <div>大家好，我是小杜杜，一起玩转Hooks吧！</div>;
+};
+
+const Index = () => {
+  const [flag, setFlag] = useState<boolean>(false);
 
   return (
-    <>
-      <div>自定义Hooks：useLatestt</div>
-      <div>count: {count}</div>
-    </>
+    <div>
+      <Button type='primary' onClick={() => setFlag(v => !v)}>
+        切换 {flag ? 'unmount' : 'mount'}
+      </Button>
+      {flag && <Child />}
+    </div>
   );
 };
+
+export default Index;
